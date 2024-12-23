@@ -17,6 +17,7 @@ const icons = {
 
 // ==============================|| EXTRA PAGES MENU ITEMS ||============================== //
 
+
 const admin = {
     id: 'administration',
     title: <FormattedMessage id="administration" />,

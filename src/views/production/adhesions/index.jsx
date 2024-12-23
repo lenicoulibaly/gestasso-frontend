@@ -1,42 +1,59 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import {Button, Grid, InputAdornment, Menu, MenuItem, OutlinedInput, Pagination, Typography} from '@mui/material';
+import {
+    Autocomplete,
+    Button,
+    Grid,
+    InputAdornment,
+    Menu,
+    MenuItem,
+    OutlinedInput,
+    Pagination, TextField,
+    Typography
+} from '@mui/material';
 
 // project imports
-import UserList from './UserList';
 import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
 
 // assetsf
 import { IconSearch } from '@tabler/icons-react';
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
-import {dispatch, useSelector} from "../../../../store";
-import NewUserForm from "./NewUserForm";
-import {userActions} from "../../../../store/slices/administration/security/userSlice";
-import UpdateUserForm from "./UpdateUserForm";
-import FncsListDialog from "../functions/FncsListDialog";
-import {useQueryClient} from "react-query";
+import {dispatch, store, useSelector} from "../../../../store";
+import {searchTypes, typeActions} from "../../../../store/slices/administration/params/typeSlice";
+import TypeList from "./TypeList";
+import NewTypeForm from "./NewTypeForm";
+import axiosServices from "../../../../utils/axios";
 
 // ==============================|| USER LIST STYLE 1 ||============================== //
 
-const UserListIndex = () => {
-    const {key, users, page, size} = useSelector((state) => state.user)
-    const queryClient = useQueryClient();
-    const onPageChange = page=>
+const ListStylePage1 = () => {
+    const typeKey = useSelector((state) => state.type.typeKey)
+    const typePages = useSelector(state=>state.type.types)
+    const [options, setOptions] = useState([])
+    const onTypeGroupsChange = async (values)=>
     {
-        dispatch(userActions.pageChanged(page))
+        await dispatch(typeActions.typeGroupsChanged(values))
+        dispatch(typeActions.typePageChanged(0))
+        dispatch(searchTypes());
     }
-    const onSizeChange = size=>
+
+    const onPageChange = (page)=>
     {
-        dispatch(userActions.sizeChanged(size))
-        dispatch(userActions.pageChanged(0))
+        dispatch(typeActions.typePageChanged(page-1))
+        dispatch(searchTypes());
     }
-    const onKeyChange = (key)=>
+
+    useEffect(() => {
+        axiosServices({url: "/types/type-groups"}).then(resp=>setOptions(resp.data)).catch(err=>console.log(err))
+    }, []);
+    const onTypeKeyChange = async (key)=>
     {
-        dispatch(userActions.keyChanged(key))
-        dispatch(userActions.pageChanged(0))
+        await dispatch(typeActions.typeKeyChanged(key))
+        dispatch(typeActions.typePageChanged(0))
+        dispatch(searchTypes());
     }
     const theme = useTheme();
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -52,8 +69,8 @@ const UserListIndex = () => {
             title={
                 <Grid container alignItems="center" justifyContent="space-between" spacing={gridSpacing}>
                     <Grid item>
-                        <OutlinedInput value={key}
-                                       onChange={(e)=>onKeyChange(e.target.value)}
+                        <OutlinedInput value={typeKey}
+                                       onChange={(e)=>onTypeKeyChange(e.target.value)}
                             id="input-search-list-style1"
                             placeholder="Search"
                             startAdornment={
@@ -64,23 +81,29 @@ const UserListIndex = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item spacing={0}>
-                        <div >
-                            <NewUserForm />
-                            <UpdateUserForm />
-                            <FncsListDialog/>
-                        </div>
+                    <Grid item >
+                        <Autocomplete sx={{ minWidth: '200px' }}  size={"small"}
+                                      onChange={(e, values)=>{onTypeGroupsChange(values)}}
+                            multiple
+                            options={options}
+                            getOptionLabel={(option) => option?.label}
+                            renderInput={(params) => <TextField {...params} label={'Filtrer par groupe'}/>}/>
+                    </Grid>
+                    <Grid item>
+                        <Typography variant="h3">
+                            <NewTypeForm />
+                        </Typography>
                     </Grid>
 
                 </Grid>
             }
-            content={false}>
-
-            <UserList />
+            content={false}
+        >
+            <TypeList />
             <Grid item xs={12} sx={{ p: 3 }}>
                 <Grid container justifyContent="space-between" spacing={gridSpacing}>
                     <Grid item>
-                        <Pagination page={page+1} onChange={(e, page)=>onPageChange(page-1)} count={users?.totalPages} color="primary" />
+                        <Pagination page={store.getState().type.typePage+1} onChange={(e, page)=>onPageChange(page)} count={typePages?.totalPages} color="primary" />
                     </Grid>
                     <Grid item>
                         <Button
@@ -90,7 +113,7 @@ const UserListIndex = () => {
                             endIcon={<ExpandMoreRoundedIcon />}
                             onClick={handleClick}
                         >
-                            {size} Rows
+                            10 Rows
                         </Button>
                         {anchorEl && (
                             <Menu
@@ -109,10 +132,9 @@ const UserListIndex = () => {
                                     horizontal: 'right'
                                 }}
                             >
-                                <MenuItem onClick={()=>onSizeChange(5)}> 5 Rows</MenuItem>
-                                <MenuItem onClick={()=>onSizeChange(10)}> 10 Rows</MenuItem>
-                                <MenuItem onClick={()=>onSizeChange(20)}> 20 Rows</MenuItem>
-                                <MenuItem onClick={()=>onSizeChange(30)}> 30 Rows </MenuItem>
+                                <MenuItem onClick={handleClose}> 10 Rows</MenuItem>
+                                <MenuItem onClick={handleClose}> 20 Rows</MenuItem>
+                                <MenuItem onClick={handleClose}> 30 Rows </MenuItem>
                             </Menu>
                         )}
                     </Grid>
@@ -122,4 +144,4 @@ const UserListIndex = () => {
     );
 };
 
-export default UserListIndex;
+export default ListStylePage1;

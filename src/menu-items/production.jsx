@@ -25,11 +25,11 @@ const production = {
     type: 'group',
     children: [
         {
-            id: 'membres',
+            id: 'adhesions',
             title: <FormattedMessage id="Membres" />,
             type: 'item',
             icon: icons.IconUserCheck,
-            url: '/apps/user/social-profile/posts'
+            url: '/production/membres'
         },
         {
             id: 'sources de revenu',
@@ -37,6 +37,13 @@ const production = {
             type: 'item',
             icon: icons.IconBasket,
             url: '/apps/chat'
+        },
+        {
+            id: 'Cotisations',
+            title: <FormattedMessage id="Cotisations" />,
+            type: 'item',
+            icon: icons.IconBasket,
+            url: '/production/cotisations'
         },
         {
             id: 'budgetisation-planification',

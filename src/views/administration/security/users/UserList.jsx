@@ -37,6 +37,10 @@ import AlertDialog from "../../../ui-elements/advance/UIDialog/AlertDialog";
 import SimpleBackdrop from "../../../ui-elements/custom/SimpleBackdrop";
 import axiosServices from "../../../../utils/axios";
 import {fncActions} from "../../../../store/slices/administration/security/fncSlice";
+import {BlockUserButton} from "./ BlockUserButton";
+import {UnblockUserButton} from "./UnblockUserButton";
+import {useUserService} from "../../../../hooks/services/useUserService";
+import {SendLinkButton} from "./SendLinkButton";
 
 //const avatarImage = require.context('assets/images/users', true);
 
@@ -44,10 +48,8 @@ import {fncActions} from "../../../../store/slices/administration/security/fncSl
 
 const UserList = () => {
     const theme = useTheme();
-    const { users, page, size, key, currentUser} = useSelector((state) => state.user);
-
-    const {data, isSuccess, isLoading, isError, error} = useQuery(['searchUsers', page, size, key], ()=>axiosServices({url: `/users/search?page=${page}&size=${size}&key=${key}`}))
-    const queryClient = useQueryClient();
+    const { users} = useSelector((state) => state.user);
+    const {searchuser, blockUser, activateUser, sendActivateAccountLink} = useUserService();
 
     const handleEditClick = async (user)=>
     {
@@ -74,38 +76,11 @@ const UserList = () => {
 
     })
 
-    const {mutate: blockUser, isLoading: isBlockLoading, isError: isBlockError, error: blockError, isSuccess: isBlockSuccess} =
-        useMutation("blockUser", (userId)=>axiosServices({url: `/users/block/${userId}`, method: 'put'}),
-            {
-                onSettled: () => {
-                    // Invalidate the "userData" query after the mutation has settled
-                    queryClient.invalidateQueries("searchUsers");
-                },
-            });
-
-    const {mutate: activateUser, isLoading: isActivateLoading, isError: isActivateError, error: activateError, isSuccess: isActivateSuccess} =
-        useMutation("activateUser", (userId)=>axiosServices({url: `/users/unblock/${userId}`, method: 'put'}),
-            {
-                onSettled: () => {
-                    // Invalidate the "userData" query after the mutation has settled
-                    queryClient.invalidateQueries("searchUsers");
-                },
-            });
-
-    const {mutate: sendActivateAccountLink, isLoading: isSendLinkLoading, isError: isSendLinkError, error: sendLinkError, isSuccess: isSendLinkSuccess} =
-        useMutation("sendActivateAccountLink", (email)=>axiosServices({url: `/users/send-activation-email/${email}`, method: 'put'}),
-            {
-                onSettled: () => {
-                    // Invalidate the "userData" query after the mutation has settled
-                    queryClient.invalidateQueries("searchUsers");
-                },
-            });
-
-    useFeedBackEffects(false, isError, error);
-    useSearchEffects(isLoading, isSuccess, data, isError, error, userActions);
-    useFeedBackEffects(isBlockSuccess, isBlockError, blockError);
-    useFeedBackEffects(isActivateSuccess, isActivateError, activateError);
-    useFeedBackEffects(isSendLinkSuccess, isSendLinkError, sendLinkError);
+    useFeedBackEffects(false, searchuser.isError, searchuser.error);
+    useSearchEffects(searchuser.isLoading, searchuser.isSuccess, searchuser.data, searchuser.isError, searchuser.error, userActions);
+    useFeedBackEffects(blockUser.isSuccess, blockUser.isError, blockUser.error);
+    useFeedBackEffects(activateUser.isSuccess, activateUser.isError, activateUser.error);
+    useFeedBackEffects(sendActivateAccountLink.isSuccess, sendActivateAccountLink.isError, sendActivateAccountLink.error);
 
     return (
         <TableContainer>
@@ -193,33 +168,11 @@ const UserList = () => {
                                                 <Edit sx={{ fontSize: '1.1rem' }} />
                                             </IconButton>
                                         </Tooltip>
+                                        {row.notBlocked && <BlockUserButton user={row} blockUserFunction={blockUser.mutate} />}
 
-                                        {row.notBlocked && <AlertDialog triggerStyle={{
-                                            color: theme.palette.error.dark,
-                                            borderColor: theme.palette.error.main,
-                                            '&:hover ': {background: theme.palette.error.light}
-                                        }} handleConfirmation={() => blockUser(row.userId)} openLabel={"Bloquer"}
-                                                      message={"Vous êtes sur le point de bloquer " + row.firstName + ". Confirmez-vous cette action ?"}
-                                                      actionDisabled={false}
-                                                      TriggerIcon={<BlockTwoToneIcon sx={{fontSize: '1.1rem'}}/>}/>}
+                                        {!row.notBlocked && <UnblockUserButton user={row} unblockUserFunction={activateUser.mutate}/>}
 
-                                        {!row.notBlocked && <AlertDialog triggerStyle={{
-                                            color: theme.palette.success.dark,
-                                            borderColor: theme.palette.success.main,
-                                            '&:hover ': {background: theme.palette.success.light}
-                                        }} handleConfirmation={() => activateUser(row.userId)} openLabel={"Débloquer"}
-                                                      message={"Vous êtes sur le point de de débloquer " + row.firstName + ". Confirmez-vous cette action ?"}
-                                                      actionDisabled={false}
-                                                      TriggerIcon={<CheckCircleIcon sx={{fontSize: '1.1rem'}}/>}/>}
-
-                                        <AlertDialog triggerStyle={{
-                                            color: theme.palette.orange.dark,
-                                            borderColor: theme.palette.orange.main,
-                                            '&:hover ': {background: theme.palette.orange.light}
-                                        }} handleConfirmation={() => sendActivateAccountLink(row.email)} openLabel={"Envoyer un lien"}
-                                                     message={"Vous êtes sur le point de d'envoyer un lien d'activation de compte à " + row.firstName + ". Confirmez-vous cette action ?"}
-                                                     actionDisabled={false}
-                                                     TriggerIcon={<AddLinkIcon sx={{fontSize: '1.1rem'}}/>}/>
+                                        <SendLinkButton user={row} unblockUserFunction={sendActivateAccountLink.mutate} />
 
                                         <Tooltip placement="top" title="Voir la liste des fonctions">
                                             <IconButton color="primary" aria-label="Liste des fonctions" size="large" onClick={()=>showFunctionsList(row)}>
@@ -232,7 +185,7 @@ const UserList = () => {
                         ))}
                 </TableBody>
             </Table>
-            <SimpleBackdrop open={isBlockLoading || isActivateLoading || isSendLinkLoading} />
+            <SimpleBackdrop open={blockUser.isLoading || activateUser.isLoading || sendActivateAccountLink.isLoading} />
         </TableContainer>
 
     );

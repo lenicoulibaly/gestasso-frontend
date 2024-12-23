@@ -16,6 +16,7 @@ import ThemeCustomization from 'themes';
 
 // auth provider
 import { JWTProvider as AuthProvider } from 'contexts/JWTContext';
+import {ReactQueryDevtools, ReactQueryDevtoolsPanel} from "react-query/devtools";
 // import { FirebaseProvider as AuthProvider } from 'contexts/FirebaseContext';
 // import { AWSCognitoProvider as AuthProvider } from 'contexts/AWSCognitoContext';
 // import { Auth0Provider as AuthProvider } from 'contexts/Auth0Context';
@@ -38,6 +39,7 @@ const App = () => {
                                     </Notistack>
                                 </>
                             </AuthProvider>
+                            <ReactQueryDevtools initialIsOpen={false} position={"bottom-right"} />
                         </QueryClientProvider>
                     </NavigationScroll>
                 </Locales>

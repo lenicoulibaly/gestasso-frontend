@@ -61,6 +61,12 @@ export const  removeTokens = ()=>
     localStorage.removeItem(refreshTokenKey);
 }
 
+export const hasAuthority = (auth)=>
+{
+    const authUser = getAuthUser();
+    if(authUser == null || authUser == undefined) return false;
+    return authUser.authorities.includes(auth);
+}
 
 const setSession = (accessToken) => {
     if (accessToken) {
@@ -167,7 +173,7 @@ export const JWTProvider = ({ children }) => {
     }
 
     return (
-        <JWTContext.Provider value={{ ...state, setSession, login, logout, register, resetPassword, updateProfile }}>{children}</JWTContext.Provider>
+        <JWTContext.Provider value={{ ...state, setSession, login, logout, register, resetPassword, updateProfile, getAuthUser }}>{children}</JWTContext.Provider>
     );
 };
 

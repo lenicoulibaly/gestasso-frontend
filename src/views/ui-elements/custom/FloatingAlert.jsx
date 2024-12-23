@@ -16,7 +16,6 @@ const FloatingAlert = () => {
         >
             <Alert style={{color: "white"}} alert elevation={6} variant="filled" severity={feedBackMode.severity} onClose={() => {dispatch(feedBackActions.dialogClosed())}}>
                 {
-
                     Array.isArray(feedBackMessages) ? feedBackMessages?.map((message, index)=>
                     {
                         return <div key={index}>{message}</div>

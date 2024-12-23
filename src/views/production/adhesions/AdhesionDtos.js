@@ -1,40 +1,23 @@
 import * as Yup from "yup";
 import {isValidDate} from "../../../utilities/DateUtils";
 
-    export const initialCreateSectionDTO =
+
+export const initialCreateAdhesionDTO = {
+    nomCotisation: '',
+    montantCotisation: '',
+    frequenceCotisation: '',
+    modePrelevement: '',
+    dateDebutCotisation: '',
+    dateFinCotisation: '',
+    delaiDeRigueurEnJours: 0,
+};
+    export const initialUpdateAdhesionDTO =
     {
         assoId: null, sectionName: '', situationGeo: '',
         sigle: '', strId: ''
     };
 
-    export const initialCreateAssoDTO =
-    {
-        assoName: '', situationGeo: '', sigle: '', droitAdhesion: '',
-        createInitialSectionDTO:initialCreateSectionDTO,
-        createSectionDTOS: []
-    };
 
-
-
-    export const createAssoFormNotTouched =
-    {
-        assoName: false, situationGeo: false, sigle: false, droitAdhesion: false,
-        createCotisationDTO: false,
-        createInitialSectionDTO: false,
-        createSectionDTOS: false
-    }
-
-    export const initialUpdateSectionDTO =
-    {
-        sectionId: null, sectionName: '', situationGeo: '',
-        sigle: '', strId: null,
-    };
-
-    export const initialUpdateAssoDTO =
-    {
-        assoId: null, assoName: '', situationGeo: '',
-        sigle: '', droitAdhesion: null
-    };
 
     export const createAssoValidationSchema =Yup.object(
     {

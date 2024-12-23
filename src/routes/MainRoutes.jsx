@@ -7,6 +7,8 @@ import Loadable from 'ui-component/Loadable';
 import AuthGuard from 'utils/route-guard/AuthGuard';
 
 import { loader as productsLoader, productLoader } from 'api/products';
+//import Profile from "../views/administration/security/users/Profile/index";
+
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -178,6 +180,7 @@ const RoleList = Loadable(lazy(()=> import("views/administration/security/roles"
 const TypeList = Loadable(lazy(() => import('views/administration/parameter/types')));
 const PrivilegeList = Loadable(lazy(()=> import("views/administration/security/privileges")));
 const AssociationsList = Loadable(lazy(()=> import("views/administration/parameter/association")));
+const Profile = Loadable(lazy(() => import('views/administration/security/users/Profile')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -696,6 +699,10 @@ const MainRoutes = {
         {
             path: '/administration/access/users',
             element: <UserList />
+        },
+        {
+            path: '/administration/access/profile/:userId',
+            element: <Profile />
         },
         {
             path: '/administration/access/roles',

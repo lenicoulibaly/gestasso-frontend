@@ -15,7 +15,7 @@ import {
 
 // ===============================|| UI DIALOG - SWEET ALERT ||=============================== //
 
-export default function AlertDialog({openLabel='Enregistrer', title='Confirmation',
+export default function AlertDialog({openLabel='Enregistrer', title='Confirmation', variant='contained',
                                         message = 'Confirmez-vous l\'enregistrement ?',actionDisabled=true,
                                         type='submit', confirmLabel='Confirmer',
                                         cancelLabel='Annuler', handleConfirmation, TriggerIcon, triggerStyle}) {
@@ -40,8 +40,8 @@ export default function AlertDialog({openLabel='Enregistrer', title='Confirmatio
             {
                 TriggerIcon ? <IconButton color="primary"
                                           sx={triggerStyle}
-                                          size="large" disabled={actionDisabled} variant="outlined" onClick={handleClickOpen} ><Tooltip placement={"top"} title={openLabel}>{TriggerIcon}</Tooltip></IconButton> :
-                    <Button disabled={actionDisabled} variant="outlined" onClick={handleClickOpen}>{openLabel}</Button>
+                                          size="large" disabled={actionDisabled} variant={variant} onClick={handleClickOpen} ><Tooltip placement={"top"} title={openLabel}>{TriggerIcon}</Tooltip></IconButton> :
+                    <Button disabled={actionDisabled} variant={variant} onClick={handleClickOpen}>{openLabel}</Button>
             }
             <Dialog
                 open={open}

@@ -79,9 +79,7 @@ const fncSlice = createSlice({
                 },
                 newCreateFncDTOAdded: (state, action)=>
                 {
-                    console.log('action.payload', action.payload)
                     state.currentCreateUserAndFncsDTO.createFncDTOS.push(action.payload);
-                    console.log('state.currentCreateUserAndFncsDTO.createFncDTOS', state.currentCreateUserAndFncsDTO.createFncDTOS)
                     state.currentCreateFncDTO = initialCreateFncDTO;
                 },
                 createFncDTORemoved: (state, action)=>

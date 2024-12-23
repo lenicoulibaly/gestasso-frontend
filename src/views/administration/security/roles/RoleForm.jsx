@@ -68,15 +68,13 @@ export default function RoleForm() {
     const {selected: selectePrivileges} = useSelector(state=>state.transferList);
     const [prvTypes, setPrvTypes] = useState([]);
     const {mutate: createRole, isError: isCreateError, isSuccess: isCreateSuccess, error: createError}
-        = useMutation('createRole', (values)=> axiosServices({url: '/roles/create', method: 'post', data: values}));
+        = useMutation('createRole', (values)=> axiosServices({url: '/roles/create', method: 'post', data: values}),
+        {onSuccess: ()=>queryClient.invalidateQueries('searchRoles')});
     const queryClient = useQueryClient();
     const {mutate: updateRole, isSuccess: isUpdateSuccess, isError: isUpdateError, error: updateError, data: newRole}
         = useMutation('updateRole',
         (values)=> axiosServices({url: '/roles/update', method: 'put', data: values}),
-        {onSuccess: ()=> {
-
-                queryClient.invalidateQueries('searchRoles');
-            }})
+        {onSuccess: ()=>queryClient.invalidateQueries('searchRoles')})
 
     const handleClickOpen = () => {
         dispatch(roleActions.formOpened({currentRole: InitialCreateRoleDTO, formMode: FormMode.NEW}));

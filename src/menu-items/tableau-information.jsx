@@ -25,7 +25,7 @@ const application = {
     type: 'group',
     children: [
         {
-            id: 'membres',
+            id: 'adhesions',
             title: <FormattedMessage id="Membres" />,
             type: 'item',
             icon: icons.IconUserCheck,

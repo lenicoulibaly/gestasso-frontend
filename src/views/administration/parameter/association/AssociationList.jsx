@@ -19,17 +19,16 @@ import {
 import {useDispatch, useSelector} from 'store';
 
 // assets
-import BlockTwoToneIcon from '@mui/icons-material/BlockTwoTone';
-import {roleActions} from "../../../../store/slices/administration/security/roleSlice";
 import {useQuery} from "react-query";
 import axiosServices from "../../../../utils/axios";
 import FloatingAlert from "../../../ui-elements/custom/FloatingAlert";
-import {feedBackActions} from "../../../../store/slices/feedBackSlice";
 import {Edit} from "@mui/icons-material";
-import {FormMode} from "../../../../enums/FormMode";
 import {assoActions} from "../../../../store/slices/administration/params/assoSlice";
 import ListIcon from "@mui/icons-material/List";
+import PeopleIcon from '@mui/icons-material/People';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import {useSearchEffects} from "../../../../hooks/useSearchEffect";
+import NumberFormat from "../../../../utils/NumberFormat";
 
 //const avatarImage = require.context('assets/images/users', true);
 
@@ -79,12 +78,17 @@ const AssociationList = () => {
                                 <TableCell>{row.assoName}</TableCell>
                                 <TableCell>{row.sigle}</TableCell>
                                 <TableCell>{row.situationGeo}</TableCell>
-                                <TableCell>{row.droitAdhesion}</TableCell>
+                                <TableCell><NumberFormat number={row.droitAdhesion} /></TableCell>
                                 <TableCell align="center" sx={{ pr: 3 }}>
                                     <Stack direction="row" justifyContent="center" alignItems="center">
                                         <Tooltip placement="top" title="Modifier">
-                                            <IconButton color="primary" aria-label="delete" size="large" onClick={()=>dispatch(assoActions.updateAssoFormOpened(row))}>
+                                            <IconButton color="warning" aria-label="delete" size="large" onClick={()=>dispatch(assoActions.updateAssoFormOpened(row))}>
                                                 <Edit sx={{ fontSize: '1.1rem' }} />
+                                            </IconButton>
+                                        </Tooltip>
+                                        <Tooltip placement="top" title="Voir la liste des membres">
+                                            <IconButton color="secondary" aria-label="Liste des sections" size="large" onClick={()=>showSectionList(row)}>
+                                                <PeopleIcon sx={{ fontSize: '1.1rem' }} />
                                             </IconButton>
                                         </Tooltip>
                                         <Tooltip placement="top" title="Voir la liste des sections">
@@ -93,8 +97,8 @@ const AssociationList = () => {
                                             </IconButton>
                                         </Tooltip>
                                         <Tooltip placement="top" title="Voir la liste des cotisations">
-                                            <IconButton color="primary" aria-label="Liste des cotisations" size="large" onClick={()=>showCotisationList(row)}>
-                                                <ListIcon sx={{ fontSize: '1.1rem' }} />
+                                            <IconButton color="success" aria-label="Liste des cotisations" size="large" onClick={()=>showCotisationList(row)}>
+                                                <MonetizationOnIcon sx={{ fontSize: '1.1rem' }} />
                                             </IconButton>
                                         </Tooltip>
                                     </Stack>

@@ -1,18 +1,24 @@
+import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
 
 // material-ui
+import { styled } from '@mui/material/styles';
 import {
     Autocomplete,
     Button,
+    Dialog,
     FormHelperText,
     Grid,
+    IconButton,
     TextField
 } from '@mui/material';
+import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import AddIcon from '@mui/icons-material/Add';
 
 // assets
+import CloseIcon from '@mui/icons-material/Close';
 import {gridSpacing} from "../../../../store/constant";
 import InputLabel from "../../../../ui-component/extended/Form/InputLabel";
 import axiosServices from "../../../../utils/axios";
@@ -26,10 +32,8 @@ import {FormMode} from "../../../../enums/FormMode";
 import AlertDialog from "../../../ui-elements/advance/UIDialog/AlertDialog";
 import {feedBackActions} from "../../../../store/slices/feedBackSlice";
 import FloatingAlert from "../../../ui-elements/custom/FloatingAlert";
-import {BootstrapDialog, BootstrapDialogTitle} from "../../../../utils/Modal";
 
-
-export default function NewTypeForm() {
+export default function NewAdhesionForm() {
     const {formOpened, currentType, formMode} = useSelector(state => state.type);
     const [options, setOptions] = useState([])
     const [selected, setSelected] = useState(null);
@@ -105,6 +109,7 @@ export default function NewTypeForm() {
     const {mutate: updateType, error: updateError, isSuccess: isUpdateSuccess, isError: isUpdateError} = useMutation('updateType', (data)=>axiosServices({method: 'put', url: `/types/update`, data: data}))
 
     const handleSubmit = values => {
+        console.log("values ", values)
         formMode == FormMode.NEW ? createType(values) : formMode == FormMode.UPDATE ? updateType(values) : null
     }
 

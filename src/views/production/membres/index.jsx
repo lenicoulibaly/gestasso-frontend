@@ -5,38 +5,34 @@ import { useTheme } from '@mui/material/styles';
 import {Button, Grid, InputAdornment, Menu, MenuItem, OutlinedInput, Pagination, Typography} from '@mui/material';
 
 // project imports
-import UserList from './UserList';
+import MembreList from './MembreList';
 import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
 
 // assetsf
 import { IconSearch } from '@tabler/icons-react';
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
-import {dispatch, useSelector} from "../../../../store";
-import NewUserForm from "./NewUserForm";
-import {userActions} from "../../../../store/slices/administration/security/userSlice";
-import UpdateUserForm from "./UpdateUserForm";
-import FncsListDialog from "../functions/FncsListDialog";
-import {useQueryClient} from "react-query";
+import {dispatch, useSelector} from "../../../store";
+import {membreActions} from "../../../store/slices/production/membres/cotisationsSlice";
+import NewMembreForm from "./NewMembreForm";
 
 // ==============================|| USER LIST STYLE 1 ||============================== //
 
-const UserListIndex = () => {
-    const {key, users, page, size} = useSelector((state) => state.user)
-    const queryClient = useQueryClient();
+const MembreListIndex = () => {
+    const {key, membres, page, size} = useSelector((state) => state.membre)
     const onPageChange = page=>
     {
-        dispatch(userActions.pageChanged(page))
+        dispatch(membreActions.pageChanged(page))
     }
     const onSizeChange = size=>
     {
-        dispatch(userActions.sizeChanged(size))
-        dispatch(userActions.pageChanged(0))
+        dispatch(membreActions.sizeChanged(size))
+        dispatch(membreActions.pageChanged(0))
     }
     const onKeyChange = (key)=>
     {
-        dispatch(userActions.keyChanged(key))
-        dispatch(userActions.pageChanged(0))
+        dispatch(membreActions.keyChanged(key))
+        dispatch(membreActions.pageChanged(0))
     }
     const theme = useTheme();
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -66,9 +62,8 @@ const UserListIndex = () => {
                     </Grid>
                     <Grid item spacing={0}>
                         <div >
-                            <NewUserForm />
-                            <UpdateUserForm />
-                            <FncsListDialog/>
+                            <NewMembreForm />
+                            {/*<UpdateMembreForm />*/}
                         </div>
                     </Grid>
 
@@ -76,11 +71,11 @@ const UserListIndex = () => {
             }
             content={false}>
 
-            <UserList />
+            <MembreList />
             <Grid item xs={12} sx={{ p: 3 }}>
                 <Grid container justifyContent="space-between" spacing={gridSpacing}>
                     <Grid item>
-                        <Pagination page={page+1} onChange={(e, page)=>onPageChange(page-1)} count={users?.totalPages} color="primary" />
+                        <Pagination page={page+1} onChange={(e, page)=>onPageChange(page-1)} count={membres?.totalPages} color="primary" />
                     </Grid>
                     <Grid item>
                         <Button
@@ -122,4 +117,4 @@ const UserListIndex = () => {
     );
 };
 
-export default UserListIndex;
+export default MembreListIndex;

@@ -5,7 +5,7 @@ import { useTheme } from '@mui/material/styles';
 import {Button, Grid, InputAdornment, Menu, MenuItem, OutlinedInput, Pagination, Typography} from '@mui/material';
 
 // project imports
-import UserList from './UserList';
+import UserList from './CotisationList';
 import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
 

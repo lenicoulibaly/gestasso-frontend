@@ -31,6 +31,10 @@ import useScriptRef from 'hooks/useScriptRef';
 // assets
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import FloatingAlert from "../../../ui-elements/custom/FloatingAlert";
+import SimpleBackdrop from "../../../ui-elements/custom/SimpleBackdrop";
+import {feedBackActions} from "../../../../store/slices/feedBackSlice";
+import {dispatch} from "../../../../store";
 
 // ===============================|| JWT LOGIN ||=============================== //
 
@@ -52,10 +56,11 @@ const JWTLogin = ({ loginProp, ...others }) => {
     };
 
     return (
+        <div>
         <Formik
             initialValues={{
-                email: 'info@codedthemes.com',
-                password: '123456',
+                email: '',
+                password: '',
                 submit: null
             }}
             validationSchema={Yup.object().shape({
@@ -72,7 +77,7 @@ const JWTLogin = ({ loginProp, ...others }) => {
                         setSubmitting(false);
                     }
                 } catch (err) {
-                    console.error(err);
+                    dispatch(feedBackActions.operationFailed(err));
                     if (scriptedRef.current) {
                         setStatus({ success: false });
                         setErrors({ submit: err.message });
@@ -176,9 +181,13 @@ const JWTLogin = ({ loginProp, ...others }) => {
                             </Button>
                         </AnimateButton>
                     </Box>
+
                 </form>
             )}
+
         </Formik>
+            <FloatingAlert/>
+        </div>
     );
 };
 

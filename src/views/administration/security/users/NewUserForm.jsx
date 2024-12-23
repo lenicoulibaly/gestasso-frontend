@@ -271,7 +271,7 @@ export default function NewUserForm() {
                                                           setSelectedRoles(ops);
                                                           setRoleCodes(ops?.map(o=>o.id))
                                                           formik.setFieldValue('createInitialFncDTO.roleCodes', ops?.map(o=>o?.id))
-                                                          console.log('roleCodes', roleCodes);
+                                                          //console.log('roleCodes', roleCodes);
                                                           //setSelectedPrvs(loadedSelectedPrvs?.data);
                                                       }}
 
