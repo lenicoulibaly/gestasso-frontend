@@ -18,16 +18,15 @@ import {
 } from '@mui/material';
 
 // project imports
-import Avatar from 'ui-component/extended/Avatar';
 
 import {dispatch, useSelector} from 'store';
 //import { getUsersListStyle1 } from 'store/slices/user';
 
 // assets
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import BlockTwoToneIcon from '@mui/icons-material/BlockTwoTone';
 import AddLinkIcon from '@mui/icons-material/AddLink';
 import ListIcon from '@mui/icons-material/List';
+import PaymentsIcon from '@mui/icons-material/Payments';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import {useMutation, useQuery, useQueryClient} from "react-query";
 import {useFeedBackEffects} from "../../../hooks/useFeedBack";
@@ -36,7 +35,7 @@ import {Edit} from "@mui/icons-material";
 import AlertDialog from "../../ui-elements/advance/UIDialog/AlertDialog";
 import SimpleBackdrop from "../../ui-elements/custom/SimpleBackdrop";
 import axiosServices from "../../../utils/axios";
-import {membreActions} from "../../../store/slices/production/membres/cotisationsSlice";
+import {membreActions} from "../../../store/slices/production/membres/membresSlice";
 import useAuth from "../../../hooks/useAuth";
 import NewUserForm from "../../administration/security/users/NewUserForm";
 import CotisationForm from "./CotisationForm";
@@ -49,6 +48,7 @@ import {useCotisationService} from "../../../hooks/services/useCotisationService
 import {cotisationActions} from "../../../store/slices/production/cotisations/cotisationsSlice";
 import {userActions} from "../../../store/slices/administration/security/userSlice";
 import NumberFormat from "../../../utils/NumberFormat";
+import {paiementCotisationActions} from "../../../store/slices/production/paiement-cotisation/paiementCotisationsSlice";
 
 //const avatarImage = require.context('assets/images/users', true);
 
@@ -76,7 +76,11 @@ const CotisationList = () => {
     function goToDetailsPage(cotisation)
     {
         dispatch(cotisationActions.detailsButtonClicked(cotisation));
-        navigate(`/production/cotisations/details/${cotisation.cotisationId}`);
+        navigate(`/production/cotisations/details/${cotisation?.cotisationId}`);
+    }
+    const OnEnregistrerPaiementButtonClicked = (cotisation)=>
+    {
+        dispatch(paiementCotisationActions.createFormOpened(cotisation))
     }
     useEffect(()=>
     {
@@ -120,6 +124,15 @@ const CotisationList = () => {
                                         <Tooltip placement="top" title="Modifier">
                                             <IconButton color="primary" aria-label="modify" size="large" onClick={()=>handleEditClick(row)}>
                                                 <Edit sx={{ fontSize: '1.1rem' }} />
+                                            </IconButton>
+                                        </Tooltip>
+
+                                        <Tooltip placement="top" title="Enregistrer un paiement">
+                                            <IconButton sx={{
+                                                color: theme.palette.success.dark,
+                                                borderColor: theme.palette.success.main,
+                                                '&:hover ': {background: theme.palette.success.light}}} aria-label="Enregistrer un paiement" size="large" onClick={()=>OnEnregistrerPaiementButtonClicked(row)}>
+                                                <PaymentsIcon sx={{ fontSize: '1.1rem' }} />
                                             </IconButton>
                                         </Tooltip>
 

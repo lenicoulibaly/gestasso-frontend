@@ -1,71 +1,115 @@
 import {styled} from "@mui/material/styles";
-import {Autocomplete, Button, Dialog, FormHelperText, Grid, IconButton, TextField} from "@mui/material";
-import DialogTitle from "@mui/material/DialogTitle";
+import {
+    Dialog,
+    DialogTitle,
+    IconButton,
+    DialogContent,
+    DialogActions,
+    Grid,
+    Tooltip,
+    useTheme,
+    Box
+} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import PropTypes from "prop-types";
 import React from "react";
-import AddIcon from "@mui/icons-material/Add";
-import {FormMode} from "../enums/FormMode";
-import DialogContent from "@mui/material/DialogContent";
-import {gridSpacing} from "../store/constant";
-import InputLabel from "../ui-component/extended/Form/InputLabel";
-import DialogActions from "@mui/material/DialogActions";
 import AlertDialog from "../views/ui-elements/advance/UIDialog/AlertDialog";
+import {gridSpacing} from "../store/constant";
+import PrintIcon from '@mui/icons-material/Print';
+import AddBoxIcon from '@mui/icons-material/AddBox';
+import {Edit} from "@mui/icons-material";
+import SaveIcon from '@mui/icons-material/Save';
 
-export const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-    '& .MuDialogContent-root': {
-        padding: theme.spacing(2)
+export const StyledDialog = styled(Dialog)(({ theme, bgcolor }) => ({
+    '& .MuiDialog-paper': {
+        overflow: 'hidden', // Empêche les débordements
+        margin: 0, // Supprime les marges par défaut
+        paddingTop: 0,
+        border: `1px solid ${bgcolor || theme.palette.secondary.main}`, // Bordure de la même couleur que le fond du titre
+        borderRadius: '5px', // Arrondit les coins de la modal
     },
-    '& .MuDialogActions-root': {
-        padding: theme.spacing(1)
-    }
 }));
 
-export const BootstrapDialogTitle = ({ children, onClose, ...other }) => (
-    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
-        {children}
-        {onClose ? (
-            <IconButton
-                aria-label="close"
-                onClick={onClose}
-                sx={{
-                    position: 'absolute',
-                    right: 10,
-                    top: 10,
-                    color: (theme) => theme.palette.grey[500]
-                }}
-            >
-                <CloseIcon />
-            </IconButton>
-        ) : null}
-    </DialogTitle>
-);
-BootstrapDialogTitle.propTypes = {
-    onClose: PropTypes.func.isRequired,
-    children: PropTypes.node
+export const StyledDialogTitle = styled(DialogTitle)(({ theme, bgcolor }) => ({
+    margin: 0, // Supprime les marges
+    padding: 10, // Supprime les padding inutiles
+    display: 'flex',
+    justifyContent: 'space-between', // Espace entre le texte et la croix
+    alignItems: 'center', // Centrage vertical
+    backgroundColor: bgcolor || theme.palette.secondary.main, // Couleur définie par props ou couleur secondaire par défaut
+    color: theme.palette.getContrastText(bgcolor || theme.palette.secondary.main), // Contraste pour une meilleure lisibilité
+    height: '50px', // Hauteur explicite
+}));
+
+export const StyledCloseButton = styled(IconButton)(({ theme, bgcolor }) => ({
+    width: '36px', // Taille explicite
+    height: '36px',
+    display: 'flex',
+    alignItems: 'center', // Centrage vertical du contenu
+    justifyContent: 'center', // Centrage horizontal du contenu
+    color: theme.palette.getContrastText(bgcolor || theme.palette.secondary.main), // Contraste sur le fond
+}));
+const Modal = ({ open, printVisible=false, newVisible=false, title, handleClose, handleConfirmation, handlePrint, handleNew, children, actionDisabled, actionLabel, width, titleBgColor, printButtonColor}) => {
+    return (
+        <StyledDialog
+            aria-labelledby="customized-dialog-title"
+            open={open}
+            maxWidth={width || 'sm'}
+            fullWidth
+            bgcolor={titleBgColor}
+        >
+            <StyledDialogTitle bgcolor={titleBgColor}>
+                <small>{decodeURIComponent(encodeURIComponent(title))}</small>
+                {handleClose && (
+                    <StyledCloseButton bgcolor={titleBgColor} aria-label="close" onClick={handleClose}>
+                        <CloseIcon />
+                    </StyledCloseButton>
+                )}
+            </StyledDialogTitle>
+            <DialogContent dividers>
+                <Grid container spacing={gridSpacing}>
+                    <Grid item xs={12}>
+                        {children}
+                    </Grid>
+                </Grid>
+            </DialogContent>
+            <DialogActions>
+                <Box sx={{ display: "flex", justifyContent: "flex-start", width: "100%" }}>
+                    {printVisible && <Tooltip placement="top" title="Imprimer">
+                        <IconButton color={printButtonColor} aria-label="Print" size="large" onClick={handlePrint}>
+                            <PrintIcon sx={{ fontSize: '2rem' }} />
+                        </IconButton>
+                    </Tooltip>}
+                    {newVisible && <Tooltip placement="top" title="Nouveau">
+                        <IconButton aria-label="New" size="large" onClick={handleNew}>
+                            <AddBoxIcon sx={{ fontSize: '2rem' }} />
+                        </IconButton>
+                    </Tooltip>}
+                </Box>
+                <AlertDialog
+                    actionDisabled={actionDisabled}
+                    openLabel={actionLabel || 'Enregistrer'}
+                    handleConfirmation={handleConfirmation}
+                    TriggerIcon={<SaveIcon sx={{ fontSize: '2rem' }} />}
+                />
+            </DialogActions>
+        </StyledDialog>
+    );
 };
 
-const Modal = ({open, title, handleClose, handleConfirmation, content, actionDisabled, actionLabel})=>
-{
-    return(
-        <>
-            <BootstrapDialog aria-labelledby="customized-dialog-title" open={open} maxWidth="sm" fullWidth>
+Modal.propTypes = {
+    open: PropTypes.bool.isRequired,
+    printVisible: PropTypes.bool.isRequired,
+    newVisible: PropTypes.bool.isRequired,
+    title: PropTypes.string.isRequired,
+    handleClose: PropTypes.func.isRequired,
+    handleConfirmation: PropTypes.func,
+    children: PropTypes.node,
+    actionDisabled: PropTypes.bool,
+    actionLabel: PropTypes.string,
+    width: PropTypes.string,
+    titleBgColor: PropTypes.string, // Prop pour la couleur de fond de la zone de titre
+    handlePrint: PropTypes.func,
+};
 
-                    <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
-                        {title}
-                    </BootstrapDialogTitle>
-                    <DialogContent dividers>
-                        <Grid container spacing={gridSpacing}>
-                            <Grid item xs={12}>
-                                {content}
-                            </Grid>
-                        </Grid>
-                    </DialogContent>
-                    <DialogActions>
-                        <AlertDialog actionDisabled={actionDisabled} openLabel={actionLabel || 'Enregistrer'} handleConfirmation={handleConfirmation}/>
-                    </DialogActions>
-            </BootstrapDialog>
-        </>)
-}
-
-export default Modal
+export default Modal;

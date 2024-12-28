@@ -23,8 +23,9 @@ import privilegeReducer from "./slices/administration/security/privilegeSlice";
 import feedBackReducer from "./slices/feedBackSlice";
 import backdropReducer from "./slices/backdropSlice";
 import transferListReducer from "./slices/transferListSlice";
-import membreReducer from "./slices/production/membres/cotisationsSlice";
+import membreReducer from "./slices/production/membres/membresSlice";
 import cotisationReducer from "./slices/production/cotisations/cotisationsSlice";
+import paiementCotisationReducer from "./slices/production/paiement-cotisation/paiementCotisationsSlice";
 
 // ==============================|| COMBINE REDUCER ||============================== //
 
@@ -56,7 +57,8 @@ const reducer = combineReducers({
     backdrop: backdropReducer,
     transferList: transferListReducer,
     membre: membreReducer,
-    cotisation: cotisationReducer
+    cotisation: cotisationReducer,
+    paiementCotisation: paiementCotisationReducer,
 });
 
 export default reducer;

@@ -13,7 +13,7 @@ import { gridSpacing } from 'store/constant';
 import { IconSearch } from '@tabler/icons-react';
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
 import {dispatch, useSelector} from "../../../store";
-import {membreActions} from "../../../store/slices/production/membres/cotisationsSlice";
+import {membreActions} from "../../../store/slices/production/membres/membresSlice";
 import NewMembreForm from "./NewMembreForm";
 
 // ==============================|| USER LIST STYLE 1 ||============================== //

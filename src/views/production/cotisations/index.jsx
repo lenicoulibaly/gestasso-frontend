@@ -15,6 +15,7 @@ import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
 import {dispatch, useSelector} from "../../../store";
 import CotisationForm from "./CotisationForm";
 import {cotisationActions} from "../../../store/slices/production/cotisations/cotisationsSlice";
+import PaiementCotisationForm from "../paiements/cotisation/PaiementCotisationForm";
 
 // ==============================|| USER LIST STYLE 1 ||============================== //
 
@@ -63,6 +64,7 @@ const CotisationListIndex = () => {
                     <Grid item spacing={0}>
                         <div >
                             <CotisationForm />
+                            <PaiementCotisationForm />
                         </div>
                     </Grid>
 

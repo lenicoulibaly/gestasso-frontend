@@ -3,8 +3,8 @@ import {initialCreateMembreDTO, initialUpdateMembreDTO} from "../../../../views/
 import {FormMode} from "../../../../enums/FormMode";
 
 
-const cotisationsSlice = createSlice({
-        name: "membre",
+const membresSlice = createSlice({
+        name: "paiementCotisation",
         initialState: {loading: false, membres: {}, error: '', key: '', page: 0, size: 5,
             currentCreateMembreDTO: initialCreateMembreDTO, currentUpdateDTO: initialUpdateMembreDTO,
             currentProfile: {},
@@ -74,10 +74,9 @@ const cotisationsSlice = createSlice({
                 profileButtonClicked: (state, action)=>
                 {
                     state.currentProfile = action.payload;
-                    console.log("action.payload : ", action.payload)
                 }
             }
     })
-const membreReducer = cotisationsSlice.reducer;
+const membreReducer = membresSlice.reducer;
 export  default membreReducer;
-export const membreActions= cotisationsSlice.actions;
+export const membreActions= membresSlice.actions;

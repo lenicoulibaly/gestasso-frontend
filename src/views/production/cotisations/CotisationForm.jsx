@@ -39,13 +39,14 @@ import {Delete, Edit} from "@mui/icons-material";
 import {feedBackActions} from "../../../store/slices/feedBackSlice";
 import SimpleBackdrop from "../../ui-elements/custom/SimpleBackdrop";
 import axiosServices from "../../../utils/axios";
-import {membreActions} from "../../../store/slices/production/membres/cotisationsSlice";
+import {membreActions} from "../../../store/slices/production/membres/membresSlice";
 import useAuth from "../../../hooks/useAuth";
 import {FormMode} from "../../../enums/FormMode";
 import {cotisationActions} from "../../../store/slices/production/cotisations/cotisationsSlice";
 import {useCotisationService} from "../../../hooks/services/useCotisationService";
 import {useTypeService} from "../../../hooks/services/useTypeService";
 import {formatNumber, handleMontantChange} from "../../../utils/NumberFormat";
+import Modal from "../../../utils/Modal";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuDialogContent-root': {
@@ -158,13 +159,8 @@ export default function CotisationForm()
             <Button variant="contained" color={'secondary'} onClick={handleClickOpen}>
                 <AddIcon />
             </Button>
-            <BootstrapDialog aria-labelledby="customized-dialog-title" open={formOpened} maxWidth="lg" fullWidth >
-                <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose} >
-                    <small>{formMode == FormMode.NEW ? `Nouvelle levée de fonds - ${decodeURIComponent(escape(assoName))}` : `Modification d'une levée de fond - ${decodeURIComponent(escape(assoName))}`}</small>
-                </BootstrapDialogTitle>
-                <DialogContent dividers>
-                    <Grid container spacing={gridSpacing}>
-                        <Grid item xs={12} >
+                            <Modal handleClose={handleClose} open={formOpened} title={<small>{formMode == FormMode.NEW ? `Nouvelle levée de fonds - ${decodeURIComponent(escape(assoName))}` : `Modification d'une levée de fond - ${decodeURIComponent(escape(assoName))}`}</small>}
+                                   handleConfirmation={handleConfirmation} width={"sm"} actionDisabled={!formik?.isValid} actionLabel={'Enregistrer'} >
                                 <Grid container spacing={2}>
 
                                     <Grid item xs={12} sm={6} >
@@ -179,7 +175,7 @@ export default function CotisationForm()
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <InputLabel>Montant {formik.touched?.montantCotisation&&<small style={{color:'red'}} >{formik.errors?.montantCotisation}</small>}</InputLabel>
-                                        <TextField fullWidth name={'montantCotisation'} onChange={(e) =>handleMontantChange(e, formik)} value={formik.values?.montantCotisation ? formatNumber(formik.values?.montantCotisation) : ''} placeholder="Saisir le montant" size={"small"}/>
+                                        <TextField fullWidth name={'montantCotisation'} onChange={(e) =>handleMontantChange(e, formik, 'montantCotisation')} value={formik.values?.montantCotisation ? formatNumber(formik.values?.montantCotisation) : ''} placeholder="Saisir le montant" size={"small"}/>
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <InputLabel>Délai en jours {formik.touched?.delaiDeRigueurEnJours&&<small style={{color:'red'}} >{formik.errors?.delaiDeRigueurEnJours}</small>}</InputLabel>
@@ -242,15 +238,7 @@ export default function CotisationForm()
                                     </Grid>
 
                                 </Grid>
-                        </Grid>
-
-                    </Grid>
-                </DialogContent>
-                <DialogActions>
-                    <AlertDialog actionDisabled={!formik?.isValid}
-                                 openLabel={'Enregistrer'} handleConfirmation={handleConfirmation}/>
-                </DialogActions>
-            </BootstrapDialog>
+                            </Modal>
             <FloatingAlert/>
             <SimpleBackdrop open={create.isLoading || update.isLoading}/>
         </div>

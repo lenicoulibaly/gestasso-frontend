@@ -38,10 +38,9 @@ export default function AlertDialog({openLabel='Enregistrer', title='Confirmatio
         <>
 
             {
-                TriggerIcon ? <IconButton color="primary"
-                                          sx={triggerStyle}
-                                          size="large" disabled={actionDisabled} variant={variant} onClick={handleClickOpen} ><Tooltip placement={"top"} title={openLabel}>{TriggerIcon}</Tooltip></IconButton> :
-                    <Button disabled={actionDisabled} variant={variant} onClick={handleClickOpen}>{openLabel}</Button>
+                TriggerIcon ?
+                    <IconButton color="secondary" sx={triggerStyle} size="large" disabled={actionDisabled} variant={variant} onClick={handleClickOpen} ><Tooltip placement={"top"} title={openLabel}>{TriggerIcon}</Tooltip></IconButton> :
+                    <Button color="secondary" disabled={actionDisabled} variant={variant} onClick={handleClickOpen}>{openLabel}</Button>
             }
             <Dialog
                 open={open}

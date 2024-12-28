@@ -36,7 +36,7 @@ import {Edit} from "@mui/icons-material";
 import AlertDialog from "../../ui-elements/advance/UIDialog/AlertDialog";
 import SimpleBackdrop from "../../ui-elements/custom/SimpleBackdrop";
 import axiosServices from "../../../utils/axios";
-import {membreActions} from "../../../store/slices/production/membres/cotisationsSlice";
+import {membreActions} from "../../../store/slices/production/membres/membresSlice";
 import useAuth from "../../../hooks/useAuth";
 import NewUserForm from "../../administration/security/users/NewUserForm";
 import NewMembreForm from "./NewMembreForm";
