@@ -49,7 +49,10 @@ export const StyledCloseButton = styled(IconButton)(({ theme, bgcolor }) => ({
     justifyContent: 'center', // Centrage horizontal du contenu
     color: theme.palette.getContrastText(bgcolor || theme.palette.secondary.main), // Contraste sur le fond
 }));
-const Modal = ({ open, printVisible=false, newVisible=false, title, handleClose, handleConfirmation, handlePrint, handleNew, children, actionDisabled, actionLabel, width, titleBgColor, printButtonColor}) => {
+const Modal = ({ open, printVisible=false, newVisible=false,
+                   title, handleClose, handleConfirmation, handlePrint, handleNew,
+                   children, actionVisible =true, actionDisabled, actionLabel, width,
+                   titleBgColor, printButtonColor, zIndex = 1300}) => {
     return (
         <StyledDialog
             aria-labelledby="customized-dialog-title"
@@ -86,7 +89,7 @@ const Modal = ({ open, printVisible=false, newVisible=false, title, handleClose,
                         </IconButton>
                     </Tooltip>}
                 </Box>
-                <AlertDialog
+                <AlertDialog actionVisible={actionVisible}
                     actionDisabled={actionDisabled}
                     openLabel={actionLabel || 'Enregistrer'}
                     handleConfirmation={handleConfirmation}
@@ -99,8 +102,8 @@ const Modal = ({ open, printVisible=false, newVisible=false, title, handleClose,
 
 Modal.propTypes = {
     open: PropTypes.bool.isRequired,
-    printVisible: PropTypes.bool.isRequired,
-    newVisible: PropTypes.bool.isRequired,
+    printVisible: PropTypes.bool,
+    newVisible: PropTypes.bool,
     title: PropTypes.string.isRequired,
     handleClose: PropTypes.func.isRequired,
     handleConfirmation: PropTypes.func,

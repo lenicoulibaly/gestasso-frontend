@@ -26,6 +26,7 @@ import transferListReducer from "./slices/transferListSlice";
 import membreReducer from "./slices/production/membres/membresSlice";
 import cotisationReducer from "./slices/production/cotisations/cotisationsSlice";
 import paiementCotisationReducer from "./slices/production/paiement-cotisation/paiementCotisationsSlice";
+import documentReducer from "./slices/production/document/documentSlice";
 
 // ==============================|| COMBINE REDUCER ||============================== //
 
@@ -59,6 +60,7 @@ const reducer = combineReducers({
     membre: membreReducer,
     cotisation: cotisationReducer,
     paiementCotisation: paiementCotisationReducer,
+    document: documentReducer,
 });
 
 export default reducer;

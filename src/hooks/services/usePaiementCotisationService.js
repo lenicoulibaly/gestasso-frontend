@@ -20,5 +20,7 @@ export const usePaiementCotisationService = ()=>
         {refetchOnWindowFocus: false, keepPreviousData: true, retry: false}
         );
 
-    return {getPaiementCotisationDto, createVersementCotisation, createVersementCotisationWithDocuments};
+    const generateRecuPaiementCotisation = useMutation(['generateRecuPaiementCotisation'], (versementId)=>axiosServices({url: `paiements/generate-recu-paiement/${versementId}`, method: 'get'}))
+
+    return {getPaiementCotisationDto, createVersementCotisation, createVersementCotisationWithDocuments, generateRecuPaiementCotisation};
 }

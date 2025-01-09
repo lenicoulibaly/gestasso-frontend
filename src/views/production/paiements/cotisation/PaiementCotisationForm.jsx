@@ -41,6 +41,7 @@ import {paiementCotisationActions} from "../../../../store/slices/production/pai
 import TableContainer from "@mui/material/TableContainer";
 import NumberFormat, {formatNumber, getRawValue, handleMontantChange} from "../../../../utils/NumberFormat";
 import DocFormList from "./DocFormList";
+import {IFrameModal} from "../../../../utils/IFrameModal";
 
 
 export default function PaiementCotisationForm()
@@ -48,7 +49,7 @@ export default function PaiementCotisationForm()
     const {formOpened, currentCotisation, currentDocument, documents} = useSelector(state=>state.paiementCotisation);
 
 
-    const {getPaiementCotisationDto, createVersementCotisation, createVersementCotisationWithDocuments} = usePaiementCotisationService();
+    const {getPaiementCotisationDto, createVersementCotisation, createVersementCotisationWithDocuments, generateRecuPaiementCotisation} = usePaiementCotisationService();
     const {getModePaiementOptions, getDocRegOptions} = useTypeService();
     const {getAdhesionOptions} = useAdhesionService()
 
@@ -57,7 +58,8 @@ export default function PaiementCotisationForm()
     const [selectedDocType, setSelectedDocType] = useState({name: 'Choisir le type', uniqueCode: ''})
     const [printVisible, setPrintVisible] = useState(createVersementCotisationWithDocuments.isSuccess)
     const [newVisible, setNewVisible] = useState(createVersementCotisationWithDocuments.isSuccess)
-
+    const [versementId, setVersementId] = useState(null);
+    const [iframeModalState, setIframeModalState] = useState({opened: false, base64String: null, })
     const theme = useTheme();
 
     const handleClose = () =>
@@ -79,11 +81,11 @@ export default function PaiementCotisationForm()
                 formData.append("files", doc.file);  // Ajouter le fichier sans utiliser de tableau
             }
         });
-
-        createVersementCotisationWithDocuments.mutate(formData);
-
-
-        //createVersementCotisation.mutate(values);
+        createVersementCotisationWithDocuments.mutateAsync(formData).then(returnedValue=>
+        {
+            setVersementId(returnedValue.data.versementId);
+            mainFormik.setFieldValue('datePaiement', null);
+        });
     }
     const onAdhesionIdChange = (adhesionOption)=>
     {
@@ -127,6 +129,15 @@ export default function PaiementCotisationForm()
     const onTypeDocInput =(docType)=>
     {
         dispatch(paiementCotisationActions.currentDocInput({...currentDocument, ...docType}));
+    }
+
+    const onPrintRecuPaiement = ()=>
+    {
+        generateRecuPaiementCotisation.mutateAsync(versementId).then(async resp=>
+        {
+            const base64String = resp.data;
+            await setIframeModalState({opened: true, base64String: base64String})
+        });
     }
 
     const mainFormik = useFormik(
@@ -174,11 +185,14 @@ export default function PaiementCotisationForm()
 
     return (
         <div>
-            <Modal open={formOpened} handleClose={handleClose} handlePrint={()=>{alert('Printing ...')}} printButtonColor={'primary'}
+
+
+            <Modal open={formOpened} handleClose={handleClose} handlePrint={onPrintRecuPaiement} printButtonColor={'primary'}
                    title={`Paiement cotisation - ${currentCotisation?.nomCotisation || ""}`} handleNew={handleNew}
-                width={"lg"} handleConfirmation={handleConfirmation} actionDisabled={!mainFormik?.isValid}
+                width={"md"} handleConfirmation={handleConfirmation} actionDisabled={!mainFormik?.isValid}
                 titleBgColor={theme.palette.secondary.main} printVisible={printVisible} newVisible={newVisible}
             >
+                <IFrameModal handleClose={()=>setIframeModalState({...iframeModalState, opened: false})} base64String={iframeModalState.base64String} opened={iframeModalState.opened} title={'Reçu de paiement'} />
                 <Grid container spacing={1}>
                     <Grid item xs={12}>
                         <GroupZone tilte={<b>Informations utiles</b>}>
@@ -285,7 +299,6 @@ export default function PaiementCotisationForm()
                                     <TextField fullWidth placeholder="Référence" label={"Référence"} onBlur={docFormik.handleBlur} size={"small"} name={'docNum'} value={currentDocument?.docNum} onChange={(e)=>onCurrentDocInput(e.target.value, 'docNum')}/>
                                 </Grid>
                                 <Grid item xs={12} md={3} >
-                                    {console.log('docFormik.errors', docFormik.errors)}
                                     <Autocomplete
                                         fullWidth
                                         size={"small"}
@@ -309,7 +322,7 @@ export default function PaiementCotisationForm()
                                 </Grid>
                                 <Grid item xs={12} md={2} >
 
-                                    <TextField fullWidth type={"file"}  placeholder="Fichier" onBlur={docFormik.handleBlur} size={"small"} value={docFormik?.file} name={'file'} onChange={(event) => {
+                                    <TextField fullWidth type={"file"}  placeholder="Fichier" onBlur={docFormik.handleBlur} size={"small"} name={'file'} onChange={(event) => {
                                         docFormik.setFieldValue("file", event.currentTarget.files[0]); // Enregistre le fichier
                                         onCurrentDocInput(event.currentTarget.files[0], 'file');
                                     }}/>
@@ -339,7 +352,7 @@ export default function PaiementCotisationForm()
             </Modal>
 
             <FloatingAlert/>
-            <SimpleBackdrop open={createVersementCotisationWithDocuments.isLoading}/>
+            <SimpleBackdrop open={createVersementCotisationWithDocuments.isLoading || generateRecuPaiementCotisation.isLoading}/>
         </div>
     );
 }

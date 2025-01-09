@@ -18,6 +18,7 @@ import {assoActions} from "../../../../store/slices/administration/params/assoSl
 import {useQuery} from "react-query";
 import axiosServices from "../../../../utils/axios";
 import AssociationList from "./AssociationList";
+import {UpdateDocForm} from "../../../production/documents/UpdateDocForm";
 
 // ==============================|| USER LIST STYLE 1 ||============================== //
 
@@ -70,6 +71,7 @@ const AssoListIndex = () => {
                         <div >
                             <NewAssoFormDlg />
                             <UpdateAssoForm />
+                            <UpdateDocForm title={'Modification de logo'} allFields={false} authorizedFiles={['image/jpeg', 'image/jpg', 'image/png']} maxSizeMo={5}/>
                         </div>
                     </Grid>
 

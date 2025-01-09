@@ -43,6 +43,7 @@ import {
     initialCreateSectionDTO
 } from "./AssoDtos";
 import {assoActions} from "../../../../store/slices/administration/params/assoSlice";
+import Modal from "../../../../utils/Modal";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuDialogContent-root': {
@@ -106,16 +107,21 @@ export default function NewAssoFormDlg() {
 
     const {mutate: createAssociation, isError: isCreateError, isSuccess: isCreateSuccess, error: createError, isLoading}
         = useMutation('createAssociation',
-        (values)=> axiosServices({url: '/associations/create', method: 'post', data: values}),
+        (values)=> axiosServices({url: '/associations/create', method: 'post', data: values, headers: {"Content-Type": "multipart/form-data"}}),
         {onSuccess: ()=>queryClient.invalidateQueries("searchAssociations")}
         );
 
     const handleSubmit = async (values) =>
     {
-        const dto = {...values, createSectionDTOS: createSectionDTOS};
-        await createAssociation(dto);
+        const {logo, createInitialSectionDTO, ...rest} = values;
+        const dto = {...rest, createSectionDTOS: createSectionDTOS};
+        const formData = new FormData();
+        formData.append('data',  JSON.stringify(dto));
+        formData.append('logo', logo);
+        await createAssociation(formData);
         await clearForm()
     }
+
 
     const formik = useFormik(
         {
@@ -180,12 +186,10 @@ export default function NewAssoFormDlg() {
             <Button variant="contained" color={'secondary'} onClick={handleClickOpen}>
                 <AddIcon />
             </Button>
-            <BootstrapDialog aria-labelledby="customized-dialog-title" open={createAssoFormOpened} maxWidth="lg" fullWidth >
-                <form onSubmit={formik.handleSubmit}>
-                    <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose} >
-                        <small>Nouvel association</small>
-                    </BootstrapDialogTitle>
-                    <DialogContent dividers>
+            <Modal aria-labelledby="customized-dialog-title" open={createAssoFormOpened} fullWidth
+                title={'Nouvelle association'} handleConfirmation={handleConfirmation} actionDisabled={!canSubmit}
+                actionLabel={'Enregistrer'} width={'lg'} titleBgColor={theme.palette.secondary.main} handleClose={handleClose}>
+
                         <Grid container spacing={gridSpacing}>
                             <Grid item xs={12} >
                                 <Grid container spacing={gridSpacing}>
@@ -210,6 +214,12 @@ export default function NewAssoFormDlg() {
                                                 <Grid item xs={12} sm={12} lg={6}>
                                                     <InputLabel>Montant du droit d'adhésion {formik.touched.droitAdhesion&&<small style={{color:theme.palette.error.main}} >{formik.errors.droitAdhesion}</small>}</InputLabel>
                                                     <TextField fullWidth placeholder="Saisir le montant du droit d'adhésion" onBlur={formik.handleBlur} size={"small"} name={'droitAdhesion'} value={formik.values.droitAdhesion} onChange={formik.handleChange}/>
+                                                    <FormHelperText></FormHelperText>
+                                                </Grid>
+                                                <Grid item xs={12} sm={12} lg={6}>
+                                                    <InputLabel>Logo {formik.touched.logo&&<small style={{color:theme.palette.error.main}} >{formik.errors.logo}</small>}</InputLabel>
+                                                    <TextField type={"file"} fullWidth onBlur={formik.handleBlur} size={"small"} name={'logo'} onChange={(e)=>formik.setFieldValue("logo", e.currentTarget.files[0])}/>
+
                                                     <FormHelperText></FormHelperText>
                                                 </Grid>
                                             </Grid>
@@ -398,13 +408,7 @@ export default function NewAssoFormDlg() {
                             </Grid>
 
                         </Grid>
-                    </DialogContent>
-                    <DialogActions>
-                        <AlertDialog actionDisabled={!canSubmit}
-                                     openLabel={'Enregistrer'} handleConfirmation={handleConfirmation}/>
-                    </DialogActions>
-                </form>
-            </BootstrapDialog>
+            </Modal>
             <FloatingAlert/>
             <SimpleBackdrop open={isLoading}/>
         </div>
