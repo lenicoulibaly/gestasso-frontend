@@ -27,6 +27,7 @@ import membreReducer from "./slices/production/membres/membresSlice";
 import cotisationReducer from "./slices/production/cotisations/cotisationsSlice";
 import paiementCotisationReducer from "./slices/production/paiement-cotisation/paiementCotisationsSlice";
 import documentReducer from "./slices/production/document/documentSlice";
+import prelevementCotisationReducer from "./slices/production/prelevement-cotisation/prelevementCotisationSlice";
 
 // ==============================|| COMBINE REDUCER ||============================== //
 
@@ -60,6 +61,7 @@ const reducer = combineReducers({
     membre: membreReducer,
     cotisation: cotisationReducer,
     paiementCotisation: paiementCotisationReducer,
+    prelevementCotisation: prelevementCotisationReducer,
     document: documentReducer,
 });
 

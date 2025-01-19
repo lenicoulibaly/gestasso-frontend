@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {forwardRef, useImperativeHandle, useState} from 'react';
 
 // material-ui
 import Button from '@mui/material/Button';
@@ -9,54 +9,43 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
 // project imports
-import AddressForm from './AddressForm';
-import PaymentForm from './PaymentForm';
-import Review from './Review';
-import MainCard from 'ui-component/cards/MainCard';
+
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import SecondaryAction from 'ui-component/cards/CardSecondaryAction';
-
-// step options
-const steps = ['Shipping address', 'Payment details', 'Review your order'];
-
-function getStepContent(step)
-{
-    switch (step) {
-        case 0:
-            return <AddressForm />;
-        case 1:
-            return <PaymentForm />;
-        case 2:
-            return <Review />;
-        default:
-            throw new Error('Unknown step');
-    }
-}
 
 // ==============================|| FORMS WIZARD - BASIC ||============================== //
 
-const BasicWizard = () => {
-    const [activeStep, setActiveStep] = React.useState(0);
+const CustumWizard = forwardRef(({steps = []}, ref) =>
+{
+    useImperativeHandle(ref, () => ({
+        resetWizard: () => setActiveIndex(0),
+        goToStep: (index) => {
+            if (index >= 0 && index < steps.length) {
+                setActiveIndex(index);
+            }
+        },
+    }));
+
+    const [activeIndex, setActiveIndex] = useState(0);
 
     const handleNext = () => {
-        setActiveStep(activeStep + 1);
+        setActiveIndex((prevIndex) => prevIndex + 1);
     };
 
     const handleBack = () => {
-        setActiveStep(activeStep - 1);
+        setActiveIndex((prevIndex) => prevIndex - 1);
     };
-
+     const activeStep = steps[activeIndex];
     return (
-        <MainCard title="Basic" secondary={<SecondaryAction link="https://next.material-ui.com/components/steppers/#main-content" />}>
-            <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
-                {steps.map((label) => (
-                    <Step key={label}>
-                        <StepLabel>{label}</StepLabel>
+        < >
+            <Stepper activeStep={activeIndex} sx={{ pt: 3, pb: 5 }}>
+                {steps.map((step, index) => (
+                    <Step key={index}>
+                        <StepLabel>{step.label}</StepLabel>
                     </Step>
                 ))}
             </Stepper>
             <>
-                {activeStep === steps.length ? (
+                {activeIndex === steps.length ? (
                     <>
                         <Typography variant="h5" gutterBottom>
                             Thank you for your order.
@@ -75,24 +64,24 @@ const BasicWizard = () => {
                     </>
                 ) : (
                     <>
-                        {getStepContent(activeStep)}
+                        {activeStep.component}
                         <Stack direction="row" justifyContent={activeStep !== 0 ? 'space-between' : 'flex-end'}>
-                            {activeStep !== 0 && (
-                                <Button onClick={handleBack} sx={{ my: 3, ml: 1 }}>
-                                    Back
+
+                                <Button onClick={handleBack} sx={{ my: 3, ml: 1 }} disabled={activeIndex === 0}>
+                                    Revenir
                                 </Button>
-                            )}
+
                             <AnimateButton>
-                                <Button variant="contained" onClick={handleNext} sx={{ my: 3, ml: 1 }}>
-                                    {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
+                                <Button disabled={activeIndex === (steps.length - 1) || activeStep.nextDisabled} variant="contained" onClick={handleNext} sx={{my: 3, ml: 1}}>
+                                    {'Suivant'}
                                 </Button>
                             </AnimateButton>
                         </Stack>
                     </>
                 )}
             </>
-        </MainCard>
+        </>
     );
-};
+});
 
-export default BasicWizard;
+export default CustumWizard;

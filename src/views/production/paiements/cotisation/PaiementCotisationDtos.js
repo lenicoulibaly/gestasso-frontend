@@ -5,6 +5,21 @@ export const initialDocument = {docId: null,
     docTypeName: '', file: null, docDescription: '',
     docPath: ''};
 
+export const initialDefautPrelevementDto = {adhesionId: null, motifDefaut: ''}
+export const initialPrelevementDto = {
+    prelevementId: null,
+    nbrAdherant: null,
+    montant: 0,
+    montantLettre: '',
+    active: true,
+    echeanceId: null,
+    nomEcheance: '',
+    cotisationId: null,
+    nomCotisation: '',
+    motif: '',
+    defautPrelevements: [],
+    docs: []
+}
 export const initialCreatePaiementCotisationDTO =
     {
         reference: null,
@@ -54,6 +69,7 @@ export const createPaiementCotisationValidationSchema = Yup.object(
         cotisationId: Yup.number().required('*'),
         typePaiementCode: Yup.string().required('*'),
 });
+
 
 export const documentValidationSchema = Yup.object(
     {

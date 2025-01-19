@@ -43,7 +43,6 @@ import NumberFormat, {formatNumber, getRawValue, handleMontantChange} from "../.
 import DocFormList from "./DocFormList";
 import {IFrameModal} from "../../../../utils/IFrameModal";
 
-
 export default function PaiementCotisationForm()
 {
     const {formOpened, currentCotisation, currentDocument, documents} = useSelector(state=>state.paiementCotisation);
@@ -61,6 +60,16 @@ export default function PaiementCotisationForm()
     const [versementId, setVersementId] = useState(null);
     const [iframeModalState, setIframeModalState] = useState({opened: false, base64String: null, })
     const theme = useTheme();
+
+    //const { documents} = useSelector((state) => state.paiementCotisation);
+    const onModifyDoc = (doc, index)=>
+    {
+        dispatch(paiementCotisationActions.documentModified({document: doc, index: index}))
+    }
+    const onRemoveDoc = (index)=>
+    {
+        dispatch(paiementCotisationActions.documentRemoved(index))
+    }
 
     const handleClose = () =>
     {
@@ -342,7 +351,7 @@ export default function PaiementCotisationForm()
                                     <Button color={"secondary"} variant={"contained"} onClick={onAddDocument} disabled={!docFormik.isValid} >Ajouter</Button>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <DocFormList />
+                                    <DocFormList documents={documents} onModify={onModifyDoc} onRemove={onRemoveDoc}/>
                                 </Grid>
                             </Grid>
 

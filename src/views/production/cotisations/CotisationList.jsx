@@ -49,6 +49,7 @@ import {cotisationActions} from "../../../store/slices/production/cotisations/co
 import {userActions} from "../../../store/slices/administration/security/userSlice";
 import NumberFormat from "../../../utils/NumberFormat";
 import {paiementCotisationActions} from "../../../store/slices/production/paiement-cotisation/paiementCotisationsSlice";
+import {prelevementCotisationActions} from "../../../store/slices/production/prelevement-cotisation/prelevementCotisationSlice";
 
 //const avatarImage = require.context('assets/images/users', true);
 
@@ -82,6 +83,12 @@ const CotisationList = () => {
     {
         dispatch(paiementCotisationActions.createFormOpened(cotisation))
     }
+
+    const OnEnregistrerPrelevementButtonClicked = (cotisation)=>
+    {
+        dispatch(prelevementCotisationActions.createFormOpened(cotisation))
+    }
+
     useEffect(()=>
     {
 
@@ -127,14 +134,24 @@ const CotisationList = () => {
                                             </IconButton>
                                         </Tooltip>
 
-                                        <Tooltip placement="top" title="Enregistrer un paiement">
+                                        {row.modePrelevementCode == 'SPONT' && <Tooltip placement="top" title="Enregistrer un paiement">
+
                                             <IconButton sx={{
                                                 color: theme.palette.success.dark,
                                                 borderColor: theme.palette.success.main,
                                                 '&:hover ': {background: theme.palette.success.light}}} aria-label="Enregistrer un paiement" size="large" onClick={()=>OnEnregistrerPaiementButtonClicked(row)}>
                                                 <PaymentsIcon sx={{ fontSize: '1.1rem' }} />
                                             </IconButton>
-                                        </Tooltip>
+                                        </Tooltip>}
+
+                                        {row.modePrelevementCode == 'SOURCE' && <Tooltip placement="top" title="Enregistrer un prelevement">
+                                            <IconButton sx={{
+                                                color: theme.palette.success.dark,
+                                                borderColor: theme.palette.success.main,
+                                                '&:hover ': {background: theme.palette.success.light}}} aria-label="Enregistrer un paiement" size="large" onClick={()=>OnEnregistrerPrelevementButtonClicked(row)}>
+                                                <PaymentsIcon sx={{ fontSize: '1.1rem' }} />
+                                            </IconButton>
+                                        </Tooltip>}
 
                                         <Tooltip placement="top" title="Consulter les détails">
                                             <IconButton sx={{

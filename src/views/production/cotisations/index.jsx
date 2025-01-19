@@ -16,6 +16,7 @@ import {dispatch, useSelector} from "../../../store";
 import CotisationForm from "./CotisationForm";
 import {cotisationActions} from "../../../store/slices/production/cotisations/cotisationsSlice";
 import PaiementCotisationForm from "../paiements/cotisation/PaiementCotisationForm";
+import {PrelevementCotisationForm} from "../paiements/cotisation/PrelevementCotisationForm";
 
 // ==============================|| USER LIST STYLE 1 ||============================== //
 
@@ -64,7 +65,9 @@ const CotisationListIndex = () => {
                     <Grid item spacing={0}>
                         <div >
                             <CotisationForm />
+
                             <PaiementCotisationForm />
+                            <PrelevementCotisationForm />
                         </div>
                     </Grid>
 

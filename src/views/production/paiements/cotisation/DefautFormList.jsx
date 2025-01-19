@@ -22,37 +22,44 @@ import {dispatch, useSelector} from 'store';
 // assets
 import {Edit} from "@mui/icons-material";
 import {paiementCotisationActions} from "../../../../store/slices/production/paiement-cotisation/paiementCotisationsSlice";
+import {prelevementCotisationActions} from "../../../../store/slices/production/prelevement-cotisation/prelevementCotisationSlice";
 
 //const avatarImage = require.context('assets/images/users', true);
 
 // ==============================|| USER LIST 1 ||============================== //
 
-const DocFormList = ({documents, onModify, onRemove}) => {
-
+const DefautFormList = () => {
+    const {prelevementDto} = useSelector(state=>state.prelevementCotisation);
+    const defautPrelevements = prelevementDto.defautPrelevements;
+    {console.log('prelevementDto', prelevementDto)}
+    const onModify = (defautPrelevement, index)=>
+    {
+        dispatch(prelevementCotisationActions.defautPrelevementModified({defautPrelevement: defautPrelevement, index: index}))
+    }
+    const onRemove = (index)=>
+    {
+        dispatch(prelevementCotisationActions.defautPrelevementRemoved(index))
+    }
     return (
         <TableContainer >
             <Table size={"small"}>
                 <TableHead>
                     <TableRow>
                         <TableCell sx={{ pl: 3 }}>#</TableCell>
-                        <TableCell>Type de pièce</TableCell>
-                        <TableCell>Référence</TableCell>
-                        <TableCell>Fichier</TableCell>
-                        <TableCell>Description</TableCell>
+                        <TableCell>Membre</TableCell>
+                        <TableCell>Motif</TableCell>
                         <TableCell align="center" sx={{ pr: 3 }}>
                             Actions
                         </TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {documents &&
-                    documents?.map((row, index) => (
+                    {prelevementDto?.defautPrelevements &&
+                    prelevementDto.defautPrelevements?.map((row, index) => (
                             <TableRow hover key={index}>
                                 <TableCell sx={{ pl: 3 }}>{index+1}</TableCell>
-                                <TableCell>{row.docTypeName}</TableCell>
-                                <TableCell>{row.docNum}</TableCell>
-                                <TableCell>{row.file.name}</TableCell>
-                                <TableCell>{row.docDescription}</TableCell>
+                                <TableCell>{row.membre}</TableCell>
+                                <TableCell>{row.motifDefaut}</TableCell>
 
 
                                 <TableCell align="center" sx={{ pr: 3 }}>
@@ -79,4 +86,4 @@ const DocFormList = ({documents, onModify, onRemove}) => {
     );
 };
 
-export default DocFormList;
+export default DefautFormList;
